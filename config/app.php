@@ -17,6 +17,20 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | First-run Setup Wizard
+    |--------------------------------------------------------------------------
+    |
+    | Until a super admin exists, all pages redirect to /setup. Set SETUP_TOKEN
+    | so only someone who knows the key can create that account.
+    |
+    */
+
+    'setup_wizard' => (bool) env('SETUP_WIZARD', true),
+
+    'setup_token' => env('SETUP_TOKEN'),
+
+    /*
+    |--------------------------------------------------------------------------
     | Application Environment
     |--------------------------------------------------------------------------
     |

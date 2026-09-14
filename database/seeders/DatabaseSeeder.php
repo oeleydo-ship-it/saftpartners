@@ -8,6 +8,10 @@ use App\Models\SiteSetting;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
+/**
+ * Safe to run on every deployment: it only creates records that are missing,
+ * so content edited in the admin CMS and existing passwords are never overwritten.
+ */
 class DatabaseSeeder extends Seeder
 {
     /**
@@ -15,12 +19,7 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        User::updateOrCreate(['email' => env('ADMIN_EMAIL', 'admin@safpartners.ae')], [
-            'name' => 'SAF Partners Administrator',
-            'password' => env('ADMIN_PASSWORD', 'ChangeMe123!'),
-            'role' => 'super_admin',
-            'email_verified_at' => now(),
-        ]);
+        $this->seedAdmin();
 
         $settings = [
             'site_name' => 'SAF PARTNERS',
@@ -45,7 +44,9 @@ class DatabaseSeeder extends Seeder
             'privacy_policy' => 'Your privacy matters to us. Contact SAF Partners for details about how enquiries are handled.',
             'terms' => 'Use of this website is subject to applicable UAE law.',
         ];
-        foreach ($settings as $key => $value) SiteSetting::updateOrCreate(['key' => $key], ['value' => $value, 'group' => str($key)->before('_')]);
+        foreach ($settings as $key => $value) {
+            SiteSetting::firstOrCreate(['key' => $key], ['value' => $value, 'group' => str($key)->before('_')]);
+        }
 
         $markets = [
             ['SOVEREIGN WEALTH FUNDS', 'sovereign-wealth-funds', '/images/market-sovereign.jpg'],
@@ -54,6 +55,35 @@ class DatabaseSeeder extends Seeder
             ['LOCAL & INTERNATIONAL CORPORATES', 'corporates', '/images/market-corporates.jpg'],
             ['GOVERNMENT ENTITIES', 'government-entities', '/images/market-government.jpg'],
         ];
-        foreach ($markets as $order => [$title, $slug, $image]) Market::updateOrCreate(['slug' => $slug], ['title' => $title, 'image' => $image, 'sort_order' => $order, 'is_active' => true]);
+        foreach ($markets as $order => [$title, $slug, $image]) {
+            // withTrashed: a market archived in the admin must not be re-created.
+            if (! Market::withTrashed()->where('slug', $slug)->exists()) {
+                Market::create(['slug' => $slug, 'title' => $title, 'image' => $image, 'sort_order' => $order, 'is_active' => true]);
+            }
+        }
+    }
+
+    private function seedAdmin(): void
+    {
+        $email = env('ADMIN_EMAIL', 'admin@safpartners.ae');
+        $password = env('ADMIN_PASSWORD');
+
+        if (User::where('email', $email)->exists()) return;
+
+        if (blank($password)) {
+            if (app()->isProduction()) {
+                $this->command?->warn('ADMIN_PASSWORD is not set: skipping admin account creation.');
+                return;
+            }
+            $password = 'ChangeMe123!';
+        }
+
+        User::create([
+            'name' => 'SAF Partners Administrator',
+            'email' => $email,
+            'password' => $password,
+            'role' => 'super_admin',
+            'email_verified_at' => now(),
+        ]);
     }
 }

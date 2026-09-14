@@ -5,8 +5,12 @@ use App\Http\Controllers\Admin\MediaController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SeoController;
+use App\Http\Controllers\SetupController;
 use App\Http\Controllers\SiteController;
 use Illuminate\Support\Facades\Route;
+
+Route::get('/setup', [SetupController::class, 'show'])->name('setup.show');
+Route::post('/setup', [SetupController::class, 'store'])->middleware('throttle:5,1')->name('setup.store');
 
 Route::get('/', [SiteController::class, 'home'])->name('home');
 Route::get('/{page}', [SiteController::class, 'page'])->whereIn('page', ['about', 'markets', 'team', 'contact', 'privacy-policy', 'terms'])->name('page');

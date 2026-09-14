@@ -101,19 +101,24 @@ Tests cover authentication, disabled registration, public rendering, contact val
 
 1. Install PHP-FPM with Laravel extensions, Composer, Node/npm, MySQL 8 and Nginx/Apache.
 2. Point the web root to `public/`; deny access to dotfiles and `.env`.
-3. Set `APP_ENV=production`, `APP_DEBUG=false`, the HTTPS `APP_URL`, MySQL, SMTP and queue variables.
-4. Run:
+3. Set `APP_ENV=production`, `APP_DEBUG=false`, the HTTPS `APP_URL`, MySQL, SMTP and queue variables, plus `ADMIN_EMAIL` and `ADMIN_PASSWORD` for the initial admin account (it is not created in production without a password).
+4. Run `bash deploy.sh` on every deployment. It runs:
 
 ```bash
 composer install --no-dev --optimize-autoloader
 npm ci
 npm run build
 php artisan migrate --force
+php artisan db:seed --force
 php artisan storage:link
 php artisan config:cache
 php artisan route:cache
 php artisan view:cache
 ```
+
+The seeder is safe to repeat: it only adds missing default content (settings and markets) and the initial admin, and never overwrites anything edited in the admin CMS.
+
+**First-run setup wizard.** Until a super admin exists, every page redirects to `/setup`, which asks for the super admin's name, email and password, logs them in and then opens the site. Set `SETUP_TOKEN` to a long random value before the first deployment so only someone who knows the key can complete setup (`SETUP_WIZARD=false` disables the wizard).
 
 5. Give the web user write access only to `storage` and `bootstrap/cache`.
 6. Run the queue under systemd/Supervisor and schedule `php artisan schedule:run` each minute.
