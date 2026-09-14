@@ -56,7 +56,8 @@ button,input,textarea,select { font:inherit; }
 .hero { min-height:max(640px, 100svh); color:#fff; position:relative; display:grid; place-items:center; padding:120px 24px 110px; background-image:linear-gradient(180deg,rgba(5,18,14,.55) 0%,rgba(5,18,14,.25) 45%,rgba(5,18,14,.7) 100%),url('/images/hero-uae-flag.jpg'); background-size:cover; background-position:center; }
 .hero-copy { text-align:center; max-width:900px; animation:fadeUp .9s ease-out both; }
 .hero h1 { margin:0; line-height:0; }
-.hero-logo { width:min(600px, 80vw); filter:drop-shadow(0 6px 24px rgba(0,0,0,.35)); }
+/* Tailwind preflight makes img display:block, so centre with auto margins rather than text-align. */
+.hero-logo { display:block; width:min(600px, 80vw); margin-inline:auto; filter:drop-shadow(0 6px 24px rgba(0,0,0,.35)); }
 .hero-copy p { margin:34px auto 0; max-width:760px; font-family:var(--display); font-size:clamp(15px, 2.1vw, 22px); font-weight:500; letter-spacing:clamp(1px, .35vw, 4px); line-height:1.6; text-shadow:0 2px 16px rgba(0,0,0,.45); }
 .hero-actions { display:flex; flex-wrap:wrap; justify-content:center; gap:14px; margin-top:40px; }
 .scroll-cue { position:absolute; left:50%; bottom:28px; width:26px; height:42px; margin-left:-13px; border:2px solid rgba(255,255,255,.75); border-radius:14px; }
@@ -165,6 +166,22 @@ button,input,textarea,select { font:inherit; }
 .simple-page h1 { margin:0 0 18px; font-family:var(--display); letter-spacing:3px; color:var(--ink); }
 .simple-page p { font-size:16px; line-height:1.75; margin:0 0 30px; }
 
+/* Legal pages */
+.simple-page .legal-card { max-width:880px; }
+.simple-page .legal-card h1 { letter-spacing:1px; font-size:clamp(28px, 4.5vw, 40px); margin-bottom:8px; }
+.simple-page .legal-updated { margin:0 0 32px; padding-bottom:24px; border-bottom:1px solid var(--line); font-size:14px; color:var(--muted); }
+.legal-doc h2 { margin:40px 0 14px; font-family:var(--display); font-size:19px; font-weight:700; color:var(--ink); }
+.legal-doc h3 { margin:24px 0 10px; font-family:var(--display); font-size:15px; font-weight:600; color:var(--ink); }
+.simple-page .legal-doc p { margin:0 0 16px; font-size:16px; line-height:1.8; }
+.legal-doc ul { margin:0 0 18px; padding-left:22px; }
+.legal-doc li { margin:0 0 10px; font-size:16px; line-height:1.7; }
+.legal-doc li::marker { color:var(--green); }
+.legal-doc strong { color:var(--ink); }
+.legal-doc a { color:var(--green-dark); text-decoration:underline; text-underline-offset:3px; }
+.legal-footer { display:flex; flex-wrap:wrap; align-items:center; gap:24px; margin-top:40px; padding-top:28px; border-top:1px solid var(--line); }
+.legal-footer a:not(.btn) { color:var(--green-dark); font-weight:600; }
+.contact-grid .consent a { color:var(--green-dark); text-decoration:underline; text-underline-offset:3px; }
+
 /* First-run setup wizard */
 .setup-card { max-width:560px !important; }
 .setup-card h1 { letter-spacing:1px !important; font-size:clamp(24px, 4vw, 30px); }
@@ -248,6 +265,15 @@ button,input,textarea,select { font:inherit; }
 .admin-actions button { border:1px solid #cbd6d1; background:#fff; padding:6px 8px; border-radius:5px; cursor:pointer; }
 .admin-actions .danger { color:#a11c1c; }
 .admin-success { background:#e6f7ed; border-left:4px solid var(--green); padding:12px; margin-bottom:18px; }
+.admin-help { margin:-6px 0 22px; padding:14px 16px; background:#f3f8f5; border-left:4px solid var(--green); border-radius:6px; font-size:13px; line-height:1.7; color:#40524a; }
+.admin-help code { background:#fff; border:1px solid #dde6e1; border-radius:4px; padding:1px 5px; font-size:12px; }
+.legal-editor { border:1px solid #e3e9e6; border-radius:10px; padding:20px; margin-bottom:22px; }
+.legal-editor-head { display:flex; justify-content:space-between; align-items:center; gap:12px; margin-bottom:14px; }
+.legal-editor-head h3 { margin:0; font-size:17px; }
+.legal-editor-head a { color:var(--green); font-size:13px; font-weight:600; }
+.legal-editor label { display:flex; flex-direction:column; gap:6px; font-size:12px; margin-bottom:14px; }
+.legal-editor input { max-width:220px; border:1px solid #cad5d0; border-radius:6px; padding:9px 10px; }
+.legal-editor textarea { width:100%; min-height:420px; border:1px solid #cad5d0; border-radius:6px; padding:12px; font:13px/1.6 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; resize:vertical; }
 .media-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(140px,1fr)); gap:14px; }
 .media-card { border:1px solid #dde6e1; border-radius:7px; overflow:hidden; }
 .media-card img { width:100%; aspect-ratio:1; object-fit:cover; background:#edf2ef; }

@@ -179,7 +179,7 @@ export default function Home({ settings: s, markets, team, formToken }: Props) {
                             </label>
                             <label className="consent">
                                 <input type="checkbox" checked={form.data.consent} onChange={e => form.setData('consent', e.target.checked)} />
-                                <span>I consent to SAF Partners using this information to respond to my enquiry.</span>
+                                <span>I consent to SAF Partners using this information to respond to my enquiry, as described in the <Link href="/privacy-policy">Privacy Policy</Link>.</span>
                             </label>
                             {['consent', 'form_token', 'form'].map(key => formErrors[key] && <small key={key} className="form-error" role="alert">{formErrors[key]}</small>)}
                             <button type="submit" className="btn btn-primary" disabled={form.processing}>{form.processing ? 'Sending…' : 'Send message'}</button>
