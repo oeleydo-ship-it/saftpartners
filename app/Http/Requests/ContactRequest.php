@@ -16,7 +16,9 @@ class ContactRequest extends FormRequest
             'subject' => ['nullable', 'string', 'max:180'],
             'message' => ['required', 'string', 'min:10', 'max:5000'],
             'consent' => ['accepted'],
-            'website' => ['nullable', 'max:0'],
+            // Spam traps are checked by App\Services\SpamGuard, not here, so bots get no validation hints.
+            'website' => ['nullable', 'string', 'max:255'],
+            'form_token' => ['nullable', 'string', 'max:1000'],
         ];
     }
 }

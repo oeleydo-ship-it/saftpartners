@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 use App\Models\Market;
 use App\Models\SiteSetting;
 use App\Models\TeamMember;
+use App\Services\SpamGuard;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -15,6 +16,7 @@ class SiteController extends Controller
             'settings' => SiteSetting::values(),
             'markets' => Market::query()->where('is_active', true)->orderBy('sort_order')->get(),
             'team' => TeamMember::query()->where('is_active', true)->orderBy('sort_order')->get(),
+            'formToken' => SpamGuard::token(),
         ]);
     }
 
