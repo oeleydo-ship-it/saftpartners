@@ -9,6 +9,7 @@ class SiteSetting extends Model
 
     public static function values(): array
     {
-        return static::query()->pluck('value', 'key')->all();
+        // Defaults fill any key missing from the database so pages never render empty.
+        return array_merge(\App\Support\DefaultContent::settings(), static::query()->pluck('value', 'key')->all());
     }
 }
