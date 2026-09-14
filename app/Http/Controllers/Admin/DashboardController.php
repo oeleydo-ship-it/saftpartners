@@ -7,6 +7,8 @@ use App\Http\Requests\Admin\SettingsRequest;
 use App\Http\Requests\Admin\TeamMemberRequest;
 use App\Models\AuditLog;
 use App\Models\ContactSubmission;
+use App\Models\MailSetting;
+use Illuminate\Support\Facades\Gate;
 use App\Models\Market;
 use App\Models\Media;
 use App\Models\SiteSetting;
@@ -27,6 +29,7 @@ class DashboardController extends Controller
             'contacts' => ContactSubmission::latest()->limit(100)->get(),
             'media' => Media::latest()->limit(100)->get(),
             'audit' => AuditLog::latest('id')->limit(20)->get(),
+            'mail' => Gate::allows('manage-mail') ? MailSetting::current()->toAdminArray() : null,
             'stats' => [
                 'markets' => Market::count(),
                 'team' => TeamMember::count(),

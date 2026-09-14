@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\MailSettingsController;
 use App\Http\Controllers\Admin\MediaController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\ProfileController;
@@ -29,6 +30,8 @@ Route::middleware('auth')->group(function () {
 Route::prefix('admin')->middleware(['auth', 'verified', 'admin'])->name('admin.')->group(function () {
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
     Route::put('/settings', [DashboardController::class, 'settings'])->name('settings');
+    Route::put('/mail', [MailSettingsController::class, 'update'])->middleware('can:manage-mail')->name('mail.update');
+    Route::post('/mail/test', [MailSettingsController::class, 'test'])->middleware(['can:manage-mail', 'throttle:6,1'])->name('mail.test');
     Route::post('/markets', [DashboardController::class, 'marketStore'])->name('markets.store');
     Route::put('/markets/{market}', [DashboardController::class, 'marketUpdate'])->name('markets.update');
     Route::delete('/markets/{market}', [DashboardController::class, 'marketDestroy'])->name('markets.destroy');

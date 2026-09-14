@@ -118,6 +118,8 @@ php artisan view:cache
 
 The seeder is safe to repeat: it only adds missing default content (settings and markets) and the initial admin, and never overwrites anything edited in the admin CMS.
 
+**Outgoing email.** Admins and super admins configure email in Admin → Email: Microsoft 365 (OAuth 2.0 client credentials over SMTP XOAUTH2, via an Entra app with the `SMTP.SendAsApp` permission), any SMTP server, or log only. Secrets are stored encrypted, and a test email button reports the result. Enquiry notifications are queued, so keep a queue worker running (`php artisan queue:work`).
+
 **First-run setup wizard.** Until a super admin exists, every page redirects to `/setup`, which asks for the super admin's name, email and password, logs them in and then opens the site. Set `SETUP_TOKEN` to a long random value before the first deployment so only someone who knows the key can complete setup (`SETUP_WIZARD=false` disables the wizard).
 
 5. Give the web user write access only to `storage` and `bootstrap/cache`.

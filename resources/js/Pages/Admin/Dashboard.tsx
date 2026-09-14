@@ -1,8 +1,9 @@
 import { Head, Link, router, useForm, usePage } from '@inertiajs/react';
 import { FormEvent, useState } from 'react';
+import MailSettings, { MailSettingsData } from './Partials/MailSettings';
 
 type Item = Record<string, any> & { id: number };
-type Props = { settings: Record<string,string>; markets: Item[]; team: Item[]; contacts: Item[]; media: Item[]; audit: Item[]; stats: Record<string,number> };
+type Props = { settings: Record<string,string>; markets: Item[]; team: Item[]; contacts: Item[]; media: Item[]; audit: Item[]; stats: Record<string,number>; mail: MailSettingsData|null };
 const contentFields = [
     ['hero_subtitle','Hero subtitle',false],['hero_cta_label','Hero CTA label',false],['hero_cta_url','Hero CTA URL',false],
     ['about_heading','About heading',false],['about_1','About column 1',true],['about_2','About column 2',true],['about_3','About column 3',true],
@@ -30,7 +31,7 @@ export default function Dashboard(props: Props) {
     const market=useForm({title:'',slug:'',description:'',image:'',icon:'',sort_order:props.markets.length,is_active:true});
     const team=useForm({name:'',slug:'',position:'',biography:'',photo:'',email:'',linkedin_url:'',sort_order:props.team.length,is_active:true});
     const media=useForm<{file:File|null;alt_text:string}>({file:null,alt_text:''});
-    const sections=['overview','content','legal','markets','team','contacts','media','audit'];
+    const sections=['overview','content','legal','markets','team','contacts','media',...(props.mail?['email']:[]),'audit'];
     const setSetting=(key:string,value:string)=>content.setData('settings',{...content.data.settings,[key]:value});
     const saveSettings=(e:FormEvent)=>{e.preventDefault();content.put(route('admin.settings'),{preserveScroll:true});};
     const submitMedia=(e:FormEvent)=>{e.preventDefault();media.post(route('admin.media.store'),{forceFormData:true,preserveScroll:true,onSuccess:()=>media.reset()});};
@@ -40,6 +41,7 @@ export default function Dashboard(props: Props) {
         {flash?.success&&<div className="admin-success">{flash.success}</div>}
         {tab==='overview'&&<><div className="stat-grid">{Object.entries(props.stats).map(([label,value])=><div className="stat-card" key={label}><span>{label.replace(/([A-Z])/g,' $1')}</span><strong>{value}</strong></div>)}</div><section className="admin-panel"><h2>Quick start</h2><p>Use Content to edit every public section. Markets and Team are database-backed collections; Media provides securely validated uploads, and Contacts stores all website enquiries.</p><a href="/" target="_blank" rel="noreferrer" className="admin-primary">Preview website</a></section></>}
         {tab==='content'&&<section className="admin-panel"><h2>Public website content</h2><form className="admin-form-grid" onSubmit={e=>{e.preventDefault();content.put(route('admin.settings'),{preserveScroll:true});}}>{contentFields.map(([key,label,long])=><label className={long?'wide':''} key={key}>{label}{long?<textarea rows={4} value={content.data.settings[key]||''} onChange={e=>content.setData('settings',{...content.data.settings,[key]:e.target.value})}/>:<input value={content.data.settings[key]||''} onChange={e=>content.setData('settings',{...content.data.settings,[key]:e.target.value})}/>}</label>)}<div><button className="admin-primary" disabled={content.processing}>Save website content</button></div></form></section>}
+        {tab==='email'&&props.mail&&<MailSettings mail={props.mail} userEmail={auth.user.email} />}
         {tab==='legal'&&<section className="admin-panel"><h2>Privacy Policy &amp; Terms of Use</h2>
             <p className="admin-help">Formatting: start a line with <code>## </code> for a heading or <code>### </code> for a subheading, start lines with <code>- </code> for bullet points, and wrap words in <code>**double asterisks**</code> for bold. Leave a blank line between paragraphs. Email addresses become links automatically. Update the date whenever the wording changes.</p>
             <form onSubmit={saveSettings}>
